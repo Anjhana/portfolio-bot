@@ -1,0 +1,54 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: smart-support-bot
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chatdb
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          model: gemma3:4b
+          temperature: 0.2
+      embedding:
+        options:
+          model: nomic-embed-text
+#    openai:
+#      api-key: ${OPENAI_API_KEY:your-api-key-here}
+#      chat:
+#        options:
+#          model: gpt-4o-mini
+#          temperature: 0.2       # Low temperature for factual support answers
+#          max-tokens: 1000
+
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 768         # text-embedding-3-small dimensions
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    com.anjhana: DEBUG
+    org.springframework.ai: INFO
